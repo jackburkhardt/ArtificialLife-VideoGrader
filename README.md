@@ -6,6 +6,7 @@ A tool that speeds up grading video submissions for the Artificial Life course a
 - Python 3.10 (untested on other versions)
 - [ffmpeg](https://ffmpeg.org/download.html)
 - [ImageMagick](https://imagemagick.org/script/download.php)
+- [VLC video player](https://www.videolan.org/vlc/) (I think)
 - pip packages: `moviepy`, `canvasapi`, `dotenv`, `pytube`
 
 ## Setup
