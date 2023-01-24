@@ -34,12 +34,15 @@ def play():
                 # command for setting grade: g <grade>
                 if grade.startswith("g ") and len(grade.split(" ")) == 2:
                     grades[name] = grade.split(" ")[1]
+                    sys.stdout.write(f"Set grade for {name} to {grade.split(' ')[1]}.\n")
                 # command for skipping to next student: n
                 elif grade == "n":
+                    sys.stdout.write("Skipping to next student...\n")
                     vlc_player.set_time(int(times[1]))
                     break
                 # command for skipping to previous student: p
                 elif grade == "p":
+                    sys.stdout.write("Skipping to previous student...\n")
                     vlc_player.set_time(int(times[0]))
                     break
                 # command for quitting: exit
@@ -89,7 +92,7 @@ def submit(id):
 if __name__ == "__main__":
 
     # get video path from command line
-    path = sys.argv[1]
+    path = str(sys.argv[1])
 
     # check if video exists
     if not os.path.exists(path):

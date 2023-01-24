@@ -29,6 +29,8 @@ def init(id):
     global video_path
     assignment = course.get_assignment(id)
     video_path = f"{id}"
+
+    sys.stdout.write(f"Fetching submissions for assignment {assignment.name}...\n")
     download_submissions()
 
 def download_submissions():
@@ -46,7 +48,7 @@ def download_submissions():
     for submission in submissions:
         # if already graded, skip
         if submission.score is not None: continue
-        print(submission.user_id)
+        #print(submission.user_id)
 
         # if submission is url and url is youtube, download video asynchronously
         if submission.submission_type == "online_text_entry" and ("youtube" in submission.body or "youtu.be" in submission.body):
