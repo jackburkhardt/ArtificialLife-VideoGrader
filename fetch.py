@@ -56,7 +56,7 @@ def download_submissions():
             global total_videos
             total_videos += 1
         else:
-            submission.add_comment("Hi! Please submit a YouTube link to your video.")
+            sys.stderr.write(f"Submission made by {student_names_ids[submission.user_id]} does not include a youtube link! Skipping...")
             return
 
 

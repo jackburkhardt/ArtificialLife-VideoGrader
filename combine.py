@@ -19,7 +19,7 @@ def combine(video_path, student_names_ids):
         id = int(video[:-4])
 
         # put the name of the student over the video clip
-        text = mpy.TextClip(student_names_ids[id], fontsize=25, color="purple")
+        text = mpy.TextClip(student_names_ids[id], fontsize=40, color="purple")
         text = text.set_pos("bottom").set_duration(clip.duration)
         clip = mpy.CompositeVideoClip([clip, text])
 
@@ -39,4 +39,4 @@ def combine(video_path, student_names_ids):
     with open(f"{video_path}/names_and_times.json", "x") as f:
         f.write(json.dumps(names_and_times))
 
-    sys.stdout.write(f"Done! Video saved to {video_path}/COMBINED.mp4\nYou can play it by running 'python3 play.py \'{video_path}\''.")
+    sys.stdout.write(f"Done! Video saved to {video_path}/COMBINED.mp4\nYou can play it by running 'python3 play.py \'{video_path}\''.\n")

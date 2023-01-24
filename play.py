@@ -3,8 +3,8 @@ import sys
 import os
 import json
 import time
-import dotenv
-import canvasapi
+from dotenv import load_dotenv
+from canvasapi import Canvas
 
 vlc_player = None
 names_and_times = None
@@ -44,6 +44,8 @@ def play():
                     break
                 # command for quitting: exit
                 elif grade == "exit":
+                    sys.stdout.write("Exiting playback...\n")
+                    vlc_player.stop()
                     final_prompt()
             
 
@@ -55,7 +57,7 @@ def play():
 
 
 def final_prompt():
-    i = input("Video playback done (or exited early)! Type 'list' to see the grades, 'submit <assignment id>' to submit them to Canvas, or 'exit' to exit.\n")
+    i = input("Type 'list' to see the grades, 'submit <assignment id>' to submit them to Canvas, or 'exit' to exit.\n")
 
     if i == "list":
         for name, grade in grades.items():
@@ -69,8 +71,8 @@ def final_prompt():
 
 def submit(id):
     
-    dotenv.load_dotenv()
-    canvas = canvasapi.Canvas(os.getenv("CANVAS_API_URL"), os.getenv("CANVAS_API_KEY"))
+    load_dotenv()
+    canvas = Canvas(os.getenv("CANVAS_API_URL"), os.getenv("CANVAS_API_KEY"))
     course = canvas.get_course(os.getenv("COURSE_ID"))
     assignment = course.get_assignment(id)
 
