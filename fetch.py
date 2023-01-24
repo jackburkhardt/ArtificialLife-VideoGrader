@@ -4,6 +4,7 @@ import sys
 from canvasapi import Canvas
 import combine
 import threading
+import re
 
 API_URL = os.getenv("CANVAS_API_URL")
 API_KEY = os.getenv("CANVAS_API_KEY")
@@ -38,7 +39,7 @@ def download_submissions():
         if submission.score is not None: continue
 
         # if submission is url and url is youtube, download video asynchronously
-        if submission.submission_type == "online_url" and ("youtube" in submission.url or "youtu.be" in submission.url):
+        if submission.submission_type == "text" and ("youtube" in submission.text or "youtu.be" in submission.text):
             student_names_ids[submission.user_id] = canvas.get_user(submission.user_id).name
             threading.Thread(target=download_submission, args=(submission,)).start()
             global total_videos
@@ -50,9 +51,15 @@ def download_submissions():
 
 
 def download_submission(submission):
+    # look for youtube.com or youtu.be in the submission text, and then grab the whole url
+    if "youtube.com" in submission.text:
+        url = re.search("https://www.youtube.com/watch\?v=[a-zA-Z0-9_-]+", submission.text).group(0)
+    elif "youtu.be" in submission.text:
+        url = re.search("https://youtu.be/[a-zA-Z0-9_-]+", submission.text).group(0)
+
     # download video to current directory/assignment name
     try:
-        video = YouTube(submission.url, on_complete_callback=lambda: download_queue.remove(video))
+        video = YouTube(url, on_complete_callback=lambda: download_queue.remove(video))
         download_queue.append(video)
     except:
         sys.stderr.write(f"Error downloading video for submission made by {submission.user_id}! Skipping...")
