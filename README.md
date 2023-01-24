@@ -22,7 +22,7 @@ Note that for Northwestern, the Canvas API url is simply the base URL (https://c
 4. Run `py fetch.py (assignment id)`!
 
 ## How it works
-`fetch.py` will go into Canvas and download all of the submissions for an assignment by the given ID. It then parses out the YouTube link that students should have included, and download the YouTube videos to the working directory. Once this process is finished, `combine.py` will automatically start up. It takes all of the downloaded video clips and puts the student's name on top, then combines them into one video. Although the program attempts to utilize multithreading, this process can still take some time. Go ahead and grab a snack.
+`fetch.py` will go into Canvas and download all of the submissions for an assignment by the given ID. It then parses out the YouTube link that students should have included and downloads the YouTube videos to the working directory. Once this process is finished, `combine.py` will automatically start up. It takes all of the downloaded video clips and puts the student's name on top, then combines them into one video. Although the program attempts to utilize multithreading, this process can still take some time. Go ahead and grab a snack.
 
 To play the video (and grade the assignment), simply run `py play.py '(assignment id)'` (note the quotes). This will open up a video player which plays the combined video. As the video is playing, you can use the following commands in the terminal window:
 - `n` to skip to the next student
