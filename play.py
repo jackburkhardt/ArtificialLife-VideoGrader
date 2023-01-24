@@ -3,10 +3,12 @@ import sys
 import os
 import json
 import time
-import fetch
+import dotenv
+import canvasapi
 
 vlc_player = None
 names_and_times = None
+assignment_id = None
 
 grades = {}
 
@@ -17,14 +19,10 @@ def play():
 
     sys.stdout.write("Video playing. Press 'n' to skip to the next student, 'p' to skip to the previous student, 'g <grade>' to set the grade, or 'exit' to exit.\n")
 
-    # every second, check if the video is playing
-    while vlc_player.is_playing():
+    # every second, check if the video is open 
+    while vlc_player:
         # if it is, get the current time
         current_time = vlc_player.get_time()
-        # convert to seconds
-        current_time = current_time / 1000
-
-        os.system("clear")
 
         # loop through names_and_times and check between each time
         for name, times in names_and_times.items():
@@ -32,21 +30,21 @@ def play():
             if current_time >= times[0] and current_time <= times[1]:
                 sys.stdout.write(f"Currently viewing: {name}\n")
                 # accept input for the grade
-                grade = input("Enter command: ")
+                grade = input("Enter command: \n")
                 # command for setting grade: g <grade>
                 if grade.startswith("g ") and len(grade.split(" ")) == 2:
                     grades[name] = grade.split(" ")[1]
                 # command for skipping to next student: n
                 elif grade == "n":
-                    vlc_player.set_time(times[1] * 1000)
+                    vlc_player.set_time(int(times[1]))
                     break
                 # command for skipping to previous student: p
                 elif grade == "p":
-                    vlc_player.set_time(times[0] * 1000)
+                    vlc_player.set_time(int(times[0]))
                     break
                 # command for quitting: exit
                 elif grade == "exit":
-                    sys.exit(0)
+                    final_prompt()
             
 
              # sleep for 1 second
@@ -57,26 +55,31 @@ def play():
 
 
 def final_prompt():
-    i = input("Video playback done! Type 'list' to see the grades, 'submit' to submit them to Canvas, or 'exit' to exit.")
+    i = input("Video playback done (or exited early)! Type 'list' to see the grades, 'submit <assignment id>' to submit them to Canvas, or 'exit' to exit.\n")
 
     if i == "list":
         for name, grade in grades.items():
             sys.stdout.write(f"{name}: {grade}\n")
-            final_prompt()
-    elif i == "submit":
-        submit()
+        final_prompt()
+    elif i.startswith("submit") and len(i.split(" ")) == 2:
+        submit(int(i.split(" ")[1]))
     elif i == "exit":
         sys.exit(0)
 
 
-def submit():
+def submit(id):
+    
+    dotenv.load_dotenv()
+    canvas = canvasapi.Canvas(os.getenv("CANVAS_API_URL"), os.getenv("CANVAS_API_KEY"))
+    course = canvas.get_course(os.getenv("COURSE_ID"))
+    assignment = course.get_assignment(id)
 
     # loop through the grades and submit them
     for name, grade in grades.items():
         # get the user id from the name
-        user_id = fetch.student_names_ids[name]
+        user_id = names_and_times[name][2]
         # get the submission
-        submission = fetch.submissions[user_id]
+        submission = assignment.get_submission(user_id)
 
         # submit the grade
         submission.edit(submission={"posted_grade": grade})
@@ -92,10 +95,10 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # create vlc player
-    vlc_player = vlc.MediaPlayer(path)
+    vlc_player = vlc.MediaPlayer(f"{os.getcwd()}/{path}/COMBINED.mp4")
 
     # open the names and times txt file, deserialize it, and set the global variable
-    with open(f"{os.getcwd()}/{path}/names_and_times.json", "r") as f:
+    with open(f"{path}/names_and_times.json", "r") as f:
         names_and_times = json.loads(f.read())
 
     play()
