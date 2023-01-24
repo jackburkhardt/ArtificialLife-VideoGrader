@@ -12,11 +12,12 @@ A tool that speeds up grading video submissions for the Artificial Life course a
 1. Clone this repository
 2. Create a `.env` file in the root directory of the repository with the following contents:
 ```
-CANVAS_API_URL=<the canvas api url>
-CANVAS_API_KEY=<your canvas api key>
-COURSE_ID=<the canvas course id>
+CANVAS_API_URL=
+CANVAS_API_KEY=
+COURSE_ID=
 ```
 Note that for Northwestern, the Canvas API url is simply the base URL (https://canvas.northwestern.edu), and the course ID can be found in the URL of the course page (e.g. https://canvas.northwestern.edu/courses/123456). You can create an API key by going to your Canvas profile settings and clicking "New Access Token".
+
 3. Install everything in the requirements section, if not already one
 4. Run `py fetch.py (assignment id)`!
 
