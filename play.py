@@ -84,8 +84,12 @@ def do_command(cmd, id):
         vlc_player.stop()
         final_prompt()
 
+    else:
+        sys.stdout.write("Invalid command!\n")
+        play(None)
+
 def final_prompt():
-    i = input("Type 'list' to see the grades, 'submit <assignment id>' to submit them to Canvas, or 'exit' to exit.\n")
+    i = input("Type 'list' to see the grades, 'submit <assignment id>' to submit them to Canvas, 'replay' to play the videos again, or 'exit' to exit.\n")
 
     if i == "list":
         for id, grade in grades.items():
@@ -98,6 +102,12 @@ def final_prompt():
         with open(f"{path}/grades.json", "w") as f:
             f.write(json.dumps(grades))
         sys.exit(0)
+    elif i == "replay":
+        curr = 0
+        play(videos[curr])
+    else:
+        sys.stdout.write("Invalid command!\n")
+        final_prompt()
 
 
 def submit(id):

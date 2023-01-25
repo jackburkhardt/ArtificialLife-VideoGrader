@@ -33,6 +33,7 @@ To play the videos and grade the submissions, simply run `py play.py (assignment
 Once exited or all videos are done, you can close the video window and the program will ask if you'd like to submit grades. You can use the following commands:
 - `list` to list all students and their grades
 - `submit (assignment id)` to send the grades to Canvas
+- `replay` to replay the videos
 - `exit` to exit the program without submitting grades (NOTE: grades will be saved if you exit without submitting!)
 
  
