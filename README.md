@@ -6,7 +6,7 @@ A tool that speeds up grading video submissions for the Artificial Life course a
 - Python 3.10 (untested on other versions)
 - Windows, macOS, or Linux
 - [VLC video player](https://www.videolan.org/vlc/) (I think)
-- pip packages: `canvasapi`, `dotenv`, `pytube`, `python-vlc`
+- pip packages: `canvasapi`, `python-dotenv`, `pytube`, `python-vlc`
 
 ## Setup
 1. Clone this repository

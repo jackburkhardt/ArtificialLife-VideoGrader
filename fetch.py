@@ -35,7 +35,8 @@ def init(id):
 
 def download_submissions():
     global submissions
-    submissions = [assignment.get_submission(229733)]
+    submissions = assignment.get_submissions()
+    # [assignment.get_submission(229733)]
     try:
         #print(assignment.name)
         os.mkdir(f"{video_path}")
@@ -47,21 +48,27 @@ def download_submissions():
 
     for submission in submissions:
         # if already graded, skip
-        if submission.score is not None: continue
+        if submission.body == None or submission.score is not None: continue
 
         # if submission is url and url is youtube, download video asynchronously
-        if submission.submission_type == "online_text_entry" and ("youtube" in submission.body or "youtu.be" in submission.body):
-            ids_to_names[submission.user_id] = "Test Student"
+        if submission.submission_type == "online_text_entry" and ("youtube.com" in submission.body or "youtu.be" in submission.body):
+            #print(f"Downloading submission made by {submission.user_id}...")
+            ids_to_names[submission.user_id] = canvas.get_user(submission.user_id).name
             #canvas.get_user(submission.user_id).name
             threading.Thread(target=download_submission, args=(submission,)).start()
             global total_videos
             total_videos += 1
         else:
-            sys.stderr.write(f"Submission made by {ids_to_names[submission.user_id]} does not include a youtube link! Skipping...")
-            return
+            sys.stderr.write(f"Submission made by {submission.user_id} does not include a youtube link! Skipping...\nParsed submission text: {submission.body}\n")
+            continue
 
 
 def download_submission(submission):
+    # check if a video exists for this user already
+    if os.path.exists(f"{video_path}/{submission.user_id}.mp4"):
+        # delete the video (in case this is a new submission)
+        os.remove(f"{video_path}/{submission.user_id}.mp4")
+
     # look for youtube.com or youtu.be in the submission text, and then grab the whole url
     if "youtube.com/shorts" in submission.body:
         url = re.search("https://www.youtube.com/shorts/[a-zA-Z0-9_-]+", submission.body).group(0)
@@ -75,7 +82,7 @@ def download_submission(submission):
         video = YouTube(url, on_complete_callback=lambda x, y: show_progress(video))
         download_queue.append(video)
     except:
-        sys.stderr.write(f"Error downloading video for submission made by {ids_to_names[submission.user_id]}! Skipping...")
+        sys.stderr.write(f"Error downloading video for submission made by {ids_to_names[submission.user_id]}! Skipping...\nParsed video URL: {url}\n")
         return
 
     stream = video.streams.filter(progressive=True, file_extension="mp4").last()
